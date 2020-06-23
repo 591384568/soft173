@@ -18,6 +18,7 @@
 
 ~~~
 将tb_class文件直接导入
+进入application/common.php文件修改邮件配置
 进入public/index.php直接开启项目
 ~~~
 
