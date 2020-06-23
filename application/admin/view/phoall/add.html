@@ -1,0 +1,124 @@
+{include file="public/_head" /}
+<!-- Main Container -->
+<div class="main-container container-fluid">
+    <!-- Page Container -->
+    <div class="page-container">
+
+        <!-- Page Sidebar -->
+        {include file="public/_left" /}
+        <!-- /Page Sidebar -->
+        <!-- Page Content -->
+        <div class="page-content">
+            <!-- Page Breadcrumb -->
+            <div class="page-breadcrumbs">
+                <ul class="breadcrumb">
+                    <li class="active">
+                        <i class="fa fa-home"></i>&nbsp;相册管理
+                    </li>
+                    <li>
+                        相册添加
+                    </li>
+                </ul>
+            </div>
+            <!-- /Page Breadcrumb -->
+            <!-- Page Body -->
+            <div class="page-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="widget radius-bordered">
+                            <div class="widget-header bordered-bottom bordered-themeprimary">
+                                <span class="widget-caption">相册添加</span>
+                            </div>
+                            <div class="widget-body">
+                                <form class="form-horizontal" enctype="multipart/form-data">
+                                    <input type="hidden" id="id" name="id" value="{:session('admin.id')}">
+                                    <div class="form-group">
+                                        <label for="catename" class="col-sm-2 control-label no-padding-right">用户</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control" value="{:session('admin.nickname')}" placeholder="用户" disabled="disabled" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="dorm" class="control-label col-sm-2 no-padding-right">宿舍号</label>
+                                        <div class="col-sm-6">
+                                            <select id="dorm" name="dorm" class="form-control">
+                                                <option value="">可以选择不选</option>
+                                                <option value="216">216</option>
+                                                <option value="306">306</option>
+                                                <option value="310">310</option>
+                                                <option value="314">314</option>
+                                                <option value="315">315</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="photos" class="control-label col-sm-2 no-padding-right">添加照片</label>
+                                        <div class="col-sm-6">
+                                            <input type="file" class="form-control" id="photos" name="photos" placeholder="添加照片" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-2 col-sm-10">
+                                            <button type="submit" class="btn btn-primary" id="pho-add">添加</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Body -->
+        </div>
+        <!-- /Page Content -->
+
+    </div>
+    <!-- /Page Container -->
+    <!-- Main Container -->
+
+</div>
+{include file="public/_js" /}
+<script>
+    $(function () {
+        $('#pho-add').click(function () {
+            var index = layer.load(1, {
+                shade: [0.1,'#fff'] //0.1透明度的白色背景
+            });
+            var photos = document.getElementById('photos').files[0];
+            var formData = new FormData();
+            formData.append('user_id', $('#id').val());
+            formData.append('dorm', $('#dorm').val());
+            formData.append('photos', photos);
+            $.ajax({
+                url: "{:url('admin/phoall/add')}",
+                type: 'post',
+                contentType: false,
+                processData: false,
+                data: formData,
+                dataType: 'json',
+                success:function (data) {
+                    layer.close(index);
+                    if (data.code == 1) {
+                        layer.msg(data.msg, {
+                            icon: 6,
+                            time: 1500
+                        }, function () {
+                            location.href = data.url;
+                        });
+                    } else {
+                        layer.open({
+                            title: '发布失败',
+                            content: data.msg,
+                            icon: 5,
+                            anim: 6
+                        });
+                    }
+                }
+            });
+            return false;
+        })
+    })
+</script>
+</body>
+<!--  /Body -->
+</html>

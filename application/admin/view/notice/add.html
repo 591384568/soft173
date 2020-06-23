@@ -1,0 +1,115 @@
+{include file="public/_head" /}
+<!-- Main Container -->
+<div class="main-container container-fluid">
+    <!-- Page Container -->
+    <div class="page-container">
+
+        <!-- Page Sidebar -->
+        {include file="public/_left" /}
+        <!-- /Page Sidebar -->
+        <!-- Page Content -->
+        <div class="page-content">
+            <!-- Page Breadcrumb -->
+            <div class="page-breadcrumbs">
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="fa fa-home"></i>&nbsp;公告管理
+                    </li>
+                    <li>公告添加</li>
+                </ul>
+            </div>
+            <!-- /Page Breadcrumb -->
+            <!-- Page Body -->
+            <div class="page-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="widget radius-bordered">
+                            <div class="widget-header bordered-bottom bordered-themeprimary">
+                                <span class="widget-caption">公告添加</span>
+                            </div>
+                            <div class="widget-body">
+                                <form action="" class="form-horizontal" enctype="multipart/form-data">
+                                    <div class="form-group">
+                                        <label for="username" class="control-label col-sm-2">发送者</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control" value="{:session('admin.nickname')}" id="username" name="username" placeholder="用户" disabled="disabled" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="file" class="control-label col-sm-2">添加文件</label>
+                                        <div class="col-sm-6">
+                                            <input type="file" class="form-control" id="file" name="file" placeholder="添加文件" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="content" class="control-label col-sm-2">文章内容</label>
+                                        <div class="col-sm-6">
+                                            <textarea name="content" id="content" cols="30" rows="10" class=""></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-2 col-sm-6">
+                                            <button class="btn btn-primary" id="add">添加</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Body -->
+        </div>
+        <!-- /Page Content -->
+
+    </div>
+    <!-- /Page Container -->
+    <!-- Main Container -->
+
+</div>
+
+{include file="public/_js" /}
+<script>
+    $(function () {
+        $('#add').click(function () {
+            var index = layer.load(1, {
+                shade: [0.1,'#fff'] //0.1透明度的白色背景
+            });
+            var file1 = document.getElementById('file').files[0];
+            var formData = new FormData();
+            formData.append('username', $('#username').val());
+            formData.append('content', $('#content').val());
+            formData.append('fileArray', file1);
+            $.ajax({
+                url: "{:url('admin/notice/add')}",
+                type: 'post',
+                contentType: false,
+                processData: false,
+                data: formData,
+                dataType: 'json',
+                success:function (data) {
+                    layer.close(index);
+                    if (data.code == 1) {
+                        layer.msg(data.msg, {
+                            icon: 6,
+                            time: 1500
+                        }, function () {
+                            location.href = data.url;
+                        });
+                    } else {
+                        layer.open({
+                            title: '发布失败',
+                            content: data.msg,
+                            icon: 5,
+                            anim: 6
+                        });
+                    }
+                }
+            });
+            return false;
+        });
+    });
+</script>
+</body>
+<!--  /Body -->
+</html>

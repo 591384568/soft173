@@ -1,0 +1,97 @@
+{include file="public/_head" /}
+<!-- Main Container -->
+<div class="main-container container-fluid">
+    <!-- Page Container -->
+    <div class="page-container">
+
+        <!-- Page Sidebar -->
+        {include file="public/_left" /}
+        <!-- /Page Sidebar -->
+        <!-- Page Content -->
+        <div class="page-content">
+            <!-- Page Breadcrumb -->
+            <div class="page-breadcrumbs">
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="fa fa-home"></i>&nbsp;相册管理
+                    </li>
+                    <li>相册列表</li>
+                </ul>
+            </div>
+            <!-- /Page Breadcrumb -->
+            <!-- Page Body -->
+            <div class="page-body">
+                <a href="{:url('admin/phoall/add')}" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i>&nbsp;添加相册</a>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <span class="widget-caption">相册列表</span>
+                                <div class="widget-buttons">
+                                    {$phoInfo->render()|raw|replace}
+                                </div>
+                            </div>
+                            <div class="widget-body">
+                                <table class="table table-hover table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>发布着</th>
+                                        <th>所属宿舍</th>
+                                        <th>图片</th>
+                                        <th>图片地址</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    {volist name="phoInfo" id="vo"}
+                                    <tr>
+                                        <td>{$vo.id}</td>
+                                        <td>{$vo.admin.nickname}</td>
+                                        <td>{if $vo.dorm == ''}ALL{else}{$vo.dorm}{/if}</td>
+                                        <td><img src="{$vo.photos}" alt="" style="width: 25px;"></td>
+                                        <td><a href="{$vo.photos}" target=_blank>{$vo.photos}</a></td>
+                                        <td>
+                                            <a href="#" class="btn btn-sm btn-danger photos-del" dataid="{$vo.id}">删除</a>
+                                        </td>
+                                    </tr>
+                                    {/volist}
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Body -->
+        </div>
+        <!-- /Page Content -->
+
+    </div>
+    <!-- /Page Container -->
+    <!-- Main Container -->
+
+</div>
+{include file="public/_js" /}
+<script>
+    $(function () {
+        $('.photos-del').click(function () {
+            var index = layer.load(1, {
+                shade: [0.1,'#fff'] //0.1透明度的白色背景
+            });
+            var id = $(this).attr('dataid');
+            $.ajax({
+                url: "{:url('admin/phoall/del')}",
+                type: 'post',
+                dataType: 'json',
+                data: {id: id},
+                success: function (data) {
+                    layer.close(index);
+                    console.log(data);
+                }
+            })
+        })
+        return false;
+    })
+</script>
+</body>
+<!--  /Body -->
+</html>

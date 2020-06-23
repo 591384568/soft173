@@ -1,0 +1,147 @@
+{include file="public/_head" /}
+<!-- Main Container -->
+<div class="main-container container-fluid">
+    <!-- Page Container -->
+    <div class="page-container">
+
+        <!-- Page Sidebar -->
+        {include file="public/_left" /}
+        <!-- /Page Sidebar -->
+        <!-- Page Content -->
+        <div class="page-content">
+            <!-- Page Breadcrumb -->
+            <div class="page-breadcrumbs">
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="fa fa-home"></i>&nbsp;人员管理
+                    </li>
+                    <li>人员添加</li>
+                </ul>
+            </div>
+            <!-- /Page Breadcrumb -->
+            <!-- Page Body -->
+            <div class="page-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="widget radius-bordered">
+                            <div class="widget-header bordered-bottom bordered-themeprimary">
+                                <span class="widget-caption">人员添加</span>
+                            </div>
+                            <div class="widget-body">
+                                <form class="form-horizontal" enctype="multipart/form-data" >
+                                    <div class="form-group">
+                                        <label for="username" class="control-label col-sm-2">用户名</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control" id="username" name="username" placeholder="请输入用户名" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password" class="control-label col-sm-2">密码</label>
+                                        <div class="col-sm-6">
+                                            <input type="password" class="form-control" id="password" name="password" placeholder="请输入密码" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="conpass" class="control-label col-sm-2">确认密码</label>
+                                        <div class="col-sm-6">
+                                            <input type="password" class="form-control" id="conpass" name="conpass" placeholder="请确认密码" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="nickname" class="control-label col-sm-2">昵称</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control" id="nickname" name="nickname" placeholder="请确认昵称" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email" class="control-label col-sm-2">邮箱</label>
+                                        <div class="col-sm-6">
+                                            <input type="email" class="form-control" id="email" name="email" placeholder="请确认邮箱" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="role" class="control-label col-sm-2">所属身份</label>
+                                        <div class="col-sm-6">
+                                            <select id="role" name="role" class="form-control">
+                                                <option>请选择</option>
+                                                {volist name="roleInfo" id="vo"}
+                                                    {if $vo.id != 1}
+                                                        <option value="{$vo.id}">{$vo.rolename}</option>
+                                                    {/if}
+                                                {/volist}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="propicadd" class="control-label col-sm-2">头像</label>
+                                        <div class="col-sm-6">
+                                            <input type="file" class="form-control" id="propicadd" name="propicadd" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-2 col-sm-6">
+                                            <button class="btn btn-primary" id="submit">添加</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Body -->
+        </div>
+        <!-- /Page Content -->
+
+    </div>
+    <!-- /Page Container -->
+    <!-- Main Container -->
+
+</div>
+
+{include file="public/_js" /}
+<script>
+    $(function () {
+        $('#submit').click(function () {
+            var propic = document.getElementById('propicadd').files[0];
+            var formData = new FormData();
+            formData.append('username', $('#username').val());
+            formData.append('password', $('#password').val());
+            formData.append('conpass', $('#conpass').val());
+            formData.append('nickname', $('#nickname').val());
+            formData.append('email', $('#email').val());
+            formData.append('role', $('#role').val());
+            formData.append('fileArray', propic);
+            $.ajax({
+                url: "{:url('admin/member/add')}",
+                type: 'post',
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: formData,
+                dataType: 'json',
+                success:function (data) {
+                    if (data.code == 1) {
+                        layer.msg(data.msg, {
+                            icon: 6,
+                            time: 2000
+                        }, function () {
+                            location.href = data.url;
+                        });
+                    } else {
+                        layer.open({
+                            title: '注册失败',
+                            content: data.msg,
+                            icon: 5,
+                            anim: 6
+                        })
+                    }
+                }
+            });
+            return false;
+        });
+    })
+</script>
+</body>
+<!--  /Body -->
+</html>

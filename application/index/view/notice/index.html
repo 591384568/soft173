@@ -1,0 +1,40 @@
+{extend name="public/base" /}
+
+{block name="title"}
+软件高职173 - 班级公告
+{/block}
+
+{block name="content"}
+
+<!-- banner部分 -->
+<div class="banner product">
+    <div class="title">
+        <p>软件高职173 班级公告</p>
+        <p class="en">Class bulletiny</p>
+    </div>
+</div>
+<!-- main部分 -->
+<div class="main product">
+    <div class="layui-container">
+        {volist name="noticeInfo" id="vo"}
+        <div class="content layui-row">
+            <div class="layui-col-xs12 layui-col-sm6 layui-col-md7 layui-col-lg6 content-img"><img src="{$vo.admin.propic}" width= "500" height= "320"></div>
+            <div class="layui-col-xs12 layui-col-sm6 layui-col-md5 layui-col-lg6 right">
+                <p class="label">{$vo.user_name}</p>
+                <p class="detail">{$vo.content}</p>
+                {if $vo.file != null}
+                    <div><a href="{$vo.file}">查看文件 ></a></div>
+                {else}
+                    <div><a href="#" style="pointer-events: none;">无文件&nbsp;&nbsp;</a></div>
+                {/if}
+            </div>
+        </div>
+        {/volist}
+        <div id="page">
+            {$noticeInfo->render()|raw|replace}
+        </div>
+</div>
+{/block}
+{block name="js"}
+
+{/block}

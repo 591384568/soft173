@@ -1,0 +1,38 @@
+{extend name="public/base" /}
+
+{block name="title"}
+软件高职173 - 班级相册
+{/block}
+
+{block name="content"}
+
+<!-- banner部分 -->
+<div class="banner case">
+    <div class="title">
+        <p>班级相册</p>
+        <p class="en">Class photo album</p>
+        <p><a class="btn btn-info" href="{:url('index/photos/add')}">上传相册</a></p>
+    </div>
+</div>
+<!-- main部分 -->
+<div class="main-case">
+    <div class="layui-container">
+        <div class="layui-row">
+            {volist name="phoInfo" id="vo"}
+            <div class="layui-inline content" style="margin-left: 20px">
+                <div class="layui-inline case-img">
+                    <a href="#" target="blank"><img src="{$vo.photos}" width="370px" height="260px"></a>
+                </div>
+                <p class="lable">{$vo.admin.nickname}</p>
+                <p style="font-size: 14px;">所属宿舍:{if $vo.dorm == ''}无{else}{$vo.dorm}{/if}&nbsp;&nbsp;日期:{$vo.create_time}</p>
+            </div>
+            {/volist}
+        </div>
+        {$phoInfo->render()|raw|replace}
+    </div>
+</div>
+{/block}
+
+{block name="js"}
+
+{/block}

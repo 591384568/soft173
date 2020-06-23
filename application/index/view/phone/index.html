@@ -1,0 +1,67 @@
+{extend name="public/base" /}
+
+{block name="title"}
+软件高职173 - 班级通讯录
+{/block}
+
+{block name="style"}
+<style>
+    .content {
+        margin-left: 20px;
+        width: 18% !important;
+        border-bottom: none !important;
+        padding-top: 5px !important;
+    }
+
+    .content p {
+        line-height: 20px !important;
+        margin: 0 0 5px !important;
+        text-align: left;
+    }
+
+    .case-img {
+        margin-bottom: 15px !important;
+    }
+
+    .info-title {
+        display: inline-block;
+        width: 65px;
+    }
+    .case-img {
+        width: 214px !important;
+        height: 119.25px !important;
+    }
+</style>
+{/block}
+
+{block name="content"}
+
+<!-- banner部分 -->
+<div class="banner case">
+    <div class="title">
+        <p>班级通讯录</p>
+        <p class="en">Class address book</p>
+    </div>
+</div>
+<!-- main部分 -->
+<div class="main-case">
+    <div class="layui-container">
+        <div class="layui-row">
+            {volist name="memberInfo" id="vo"}
+            <div class="layui-inline content">
+                <div class="layui-inline case-img"><img src="{$vo.propic}"></div>
+                <p><span class="info-title">用户:</span>{$vo.nickname}</p>
+                <p><span class="info-title">手机号:</span>{if $vo.bio.phone == null}无{else}{$vo.bio.phone}{/if}</p>
+                <p><span class="info-title">QQ号:</span>{if $vo.bio.qq == null}无{else}{$vo.bio.qq}{/if}</p>
+                <p><span class="info-title">微信号:</span>{if $vo.bio.wechat == null}无{else}{$vo.bio.wechat}{/if}</p>
+            </div>
+            {/volist}
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="js"}
+
+{/block}
+

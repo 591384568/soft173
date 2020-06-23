@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+    <title>{block name="title"}软件高职173 - 班级网站{/block}</title>
+    <link rel="stylesheet" href="/static/res/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/res/static/css/index.css">
+    <link rel="stylesheet" href="/static/res/static/css/page.css">
+    <link rel="stylesheet" href="/static/index/css/bootstrap.css">
+    <script src="/static/lib/vue/vue.js"></script>
+    <script src="/static/lib/axios/axios.min.js"></script>
+    <style>
+        .notice-pic { width: 64px; height: 64px; }
+        .slide-pic {position:relative; width:100%; height:100%; overflow:hidden}
+    </style>
+    {block name="style"}
+    <style>
+        .main.product{padding-bottom: 0px}
+    </style>
+    {/block}
+</head>
+<body>
+<!-- nav部分 -->
+<div class="nav index">
+    <div class="layui-container">
+        <!-- 公司logo -->
+        <div class="nav-logo">
+            <a href="index.html">
+                <!--<img src="/static/res/static/img/logo.png" alt="网络公司">-->
+            </a>
+        </div>
+        <div class="nav-list">
+            <button>
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="layui-nav" lay-filter="">
+                <li class="layui-nav-item"><a href="{:url('index/index/index')}">首页</a></li>
+                <li class="layui-nav-item"><a href="{:url('index/notice/index')}">公告</a></li>
+                <li class="layui-nav-item"><a href="{:url('index/article/index')}">留言板</a></li>
+                <li class="layui-nav-item"><a href="{:url('index/photos/index')}">相册</a></li>
+                <li class="layui-nav-item"><a href="{:url('index/phone/index')}">通讯录</a></li>
+                <li class="layui-nav-item"><a href="{:url('index/person/index')}">个人资料</a></li>
+                {if {:session('index.id')}}
+                <li class="layui-nav-item" id="user-login" >
+                    <img style="width: 50px;height: 50px;z-index: 999" src="{:session('index.propic')}" class="propic-entity" alt="">
+                    {:session('index.nickname')}
+                    <a href="#" id="logout" style="display: inline-block; font-size: 16px;">退出登陆</a>
+                </li>
+                {else}
+                    <li class="layui-nav-item"><a href="{:url('index/login/login')}">登陆</a></li>
+                {/if}
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- banner部分 -->
+{block name="content"}
+<div id="content">
+<div>
+    <div class="layui-carousel" id="banner">
+        <div carousel-item class="slide-pic">
+            <div>
+                <img v-bind:src="swit1">
+            </div>
+            <div>
+                <img v-bind:src="swit2">
+            </div>
+            <div>
+                <img v-bind:src="swit3">
+            </div>
+            <div>
+                <img v-bind:src="swit4">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- main部分 -->
+<div class="main-product" id="test">
+    <div class="layui-container">
+        <p class="title">班级公告</p>
+        <div class="layui-row layui-col-space25" id="notice">
+
+            <div class="layui-col-sm6 layui-col-md3" v-for="notices in notice">
+                <div class="content">
+                    <div>
+                        <img class="notice-pic" v-bind:src="notices.admin.propic">
+                    </div>
+                    <div>
+                        <p class="label">{{ notices.user_name }}</p>
+                        <p>{{ notices.content }}</p>
+                    </div>
+                    <p> {{ notices.create_time }} </p>
+                    <a href="{:url('index/notice/index')}">查看公告 ></a>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+<div class="main-service">
+    <div class="layui-container">
+        <p class="title">班级相册</p>
+        <div class="layui-row layui-col-space25 layui-col-space80">
+
+            <div class="layui-col-sm6" v-for="pho in slide">
+                <div class="content">
+                    <div class="content-left">
+                        <img v-bind:src="pho.photos">
+                    </div>
+                    <div class="content-right">
+                        <p class="label">{{pho.admin.nickname}}</p>
+                        <span></span>
+                        <p>{{pho.create_time}}</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="service-more"><a href="{:url('index/photos/index')}">查看更多</a></div>
+    </div>
+</div>
+</div>
+{/block}
+
+<!-- footer部分 -->
+<div class="footer">
+    <div class="layui-container">
+        <div class="layui-row footer-contact">
+            <div class="layui-col-sm10 layui-col-lg11">
+                <div class="layui-row">
+                    <div class="layui-col-sm6 layui-col-md8 layui-col-lg9">
+                        <p class="contact-top"></p>
+                    </div>
+                    <div class="layui-col-sm6 layui-col-md4 layui-col-lg3">
+                        <p class="contact-bottom"><span class="right">班主任: 张振球</span></p>
+                        <p class="contact-bottom"><span class="right">联系电话: 12345678910</span></p>
+                        <p class="contact-bottom"><span class="right">Copyright&nbsp;©&nbsp;2020-2020 888888</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/static/res/layui/layui.js"></script>
+<script src="/static/lib/jquery/jquery.js"></script>
+<!--[if lt IE 9]>
+<script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+<script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<script>
+    layui.config({
+        base: '/static/res/static/js/'
+    }).use('firm');
+    $(function () {
+        $('#logout').click(function () {
+            $.ajax({
+                url: "{:url('index/index/logout')}",
+                type: 'post',
+                dataType: 'json',
+                success: function (data) {
+                    location.href = data.url;
+                }
+            });
+            return false;
+        })
+    });
+</script>
+{block name="js"}
+<script>
+    new Vue({
+        el: '#content',
+        data: {
+            slide: [],
+            notice: [],
+            photos: [],
+            swit1: '',
+            swit2: '',
+            swit3: '',
+            swit4: '',
+        },
+        created() {
+            axios.post("{:url('index/index/slide')}").then((response) => {
+                this.slide = response.data;
+                this.swit1 = this.slide[0].photos;
+                this.swit2 = this.slide[1].photos;
+                this.swit3 = this.slide[2].photos;
+                this.swit4 = this.slide[3].photos;
+            });
+            axios.post("{:url('index/index/notice')}").then((response) => {
+                this.notice = response.data;
+            });
+        }
+    });
+
+</script>
+{/block}
+</body>
+</html>

@@ -1,0 +1,515 @@
+{extend name="public/base" /}
+
+{block name="title"}
+个人资料
+{/block}
+
+{block name="style"}
+<style>
+    .title {
+        font-size: 32px !important;
+        line-height: 180px !important;
+        text-align: center;
+        border-bottom: 1px solid #DDD;
+    }
+    .propic-val {
+        margin: 0 0 10px !important;
+        width: 148px;
+    }
+    .propic-val img {
+        border-radius:50%;
+    }
+    .avatar-txt-margin {
+        width: 120px;
+        text-align: center;
+    }
+    .summary {
+        padding-top: 20px;
+    }
+    .main-product p {
+        font-size: 12px !important;
+        line-height: 17px;
+    }
+    .clearfix {
+        border-bottom: 1px solid #DDD;
+        position: relative;
+    }
+    .secure-set-list li {
+        padding: 33px;
+        border-top: 1px dashed #e1e6eb;
+    }
+    .set-list-left {
+        width: 140px;
+    }
+    .inner {
+        width: 75%;
+        font-size: 12px;
+    }
+    .btn-mod {
+        cursor: pointer;
+    }
+</style>
+{/block}
+
+{block name="content"}
+
+<div id="content">
+    <!-- main部分 -->
+    <div class="main-product" id="test">
+        <div class="layui-container">
+            <h1 class="title">个人资料</h1>
+            <div>
+
+                <div class="clearfix">
+                    <div class="avatar pull-left">
+                        <p class="propic-val">
+                            <img src="{$memberInfo.propic}" class="propic-entity" alt="" width="120" height="120">
+                        </p>
+                        <p class="avatar-txt-margin">
+                            <label for="propic" style="color: #06C;" class="btn-mod">修改头像</label>
+                            <input type="file" id="propic" name="propic" style="display: none" onchange="headPro(this)" />
+                        </p>
+                    </div>
+                    <div class="summary">
+                        <p class="ng-binding">
+                            <span>登陆账号</span>
+                            <span> : </span> {$memberInfo.nickname}
+                        </p>
+                        <p class="ng-binding">
+                            <span>账号昵称</span>
+                            <span> : </span> {$memberInfo.username}
+                        </p>
+                        <p class="ng-binding">
+                            <span>注册时间</span>
+                            <span> : </span> {$memberInfo.create_time}
+                        </p>
+                    </div>
+                    <a class="btn btn-sm btn-warning member-edit" id="mod-person-btn" href="{:url('index/person/updata', ['id' => $memberInfo.id])}">修改个人资料</a>
+                    <a class="btn btn-sm btn-default member-edit" id="mod-pwd-btn" href="{:url('index/person/pwdmod', ['id' => $memberInfo.id])}">修改密码</a>
+                    <a class="btn btn-sm btn-primary" href="{:url('index/person/notice', ['id' => $memberInfo.username])}">查看个人公告</a>
+                    <a class="btn btn-sm btn-info" href="{:url('index/person/article', ['id' => $memberInfo.id])}">查看个人留言</a>
+                    <a class="btn btn-sm btn-default" href="{:url('index/person/photos', ['id' => $memberInfo.id])}">查看个人相册</a>
+                </div>
+                <div class="ng-isolate-scope">
+                    <ul class="secure-set-list">
+
+                        <li class="ng-scope">
+                            <div class="set-list-left pull-left">
+                                <b class="ng-binding">QQ号</b>
+                            </div>
+                            <div class="set-list-right pull-right">
+                                <span class="ng-scope text-success">
+                                    {if $memberInfo.bio.qq != null}
+                                    <span class="ng-binding">已设置</span>
+                                    {else}
+                                    <span class="ng-binding" style="color: #F90 !important;">未设置</span>
+                                    {/if}
+                                </span>
+                            </div>
+                            <div class="set-list-mid">
+                                <div class="inner ng-scope ng-binding">
+                                    {if $memberInfo.bio.qq != null}
+                                        {$memberInfo.bio.qq}
+                                    {else}
+                                        无
+                                    {/if}
+                                </div>
+                            </div>
+                        </li>
+                        <li class="ng-scope">
+                            <div class="set-list-left pull-left">
+                                <b class="ng-binding">邮箱</b>
+                            </div>
+                            <div class="set-list-right pull-right">
+                                <span class="ng-scope text-success">
+                                    {if $memberInfo.email != null}
+                                    <span class="ng-binding">已设置</span>
+                                    {else}
+                                    <span class="ng-binding" style="color: #F90 !important;">未设置</span>
+                                    {/if}
+                                </span>
+                            </div>
+                            <div class="set-list-mid">
+                                <div class="inner ng-scope ng-binding">
+                                    {if $memberInfo.email != null}
+                                    {$memberInfo.email}
+                                    {else}
+                                    无
+                                    {/if}
+                                </div>
+                            </div>
+                        </li>
+                        <li class="ng-scope">
+                            <div class="set-list-left pull-left">
+                                <b class="ng-binding">手机号</b>
+                            </div>
+                            <div class="set-list-right pull-right">
+                                <span class="ng-scope text-success">
+                                    {if $memberInfo.bio.phone != null}
+                                    <span class="ng-binding">已设置</span>
+                                    {else}
+                                    <span class="ng-binding" style="color: #F90 !important;">未设置</span>
+                                    {/if}
+                                </span>
+                            </div>
+                            <div class="set-list-mid">
+                                <div class="inner ng-scope ng-binding">
+                                    {if $memberInfo.bio.phone != null}
+                                    {$memberInfo.bio.phone}
+                                    {else}
+                                    无
+                                    {/if}
+                                </div>
+                            </div>
+                        </li>
+                        <li class="ng-scope">
+                            <div class="set-list-left pull-left">
+                                <b class="ng-binding">地址</b>
+                            </div>
+                            <div class="set-list-right pull-right">
+                                <span class="ng-scope text-success">
+                                    {if $memberInfo.bio.address != null}
+                                    <span class="ng-binding">已设置</span>
+                                    {else}
+                                    <span class="ng-binding" style="color: #F90 !important;">未设置</span>
+                                    {/if}
+                                </span>
+                            </div>
+                            <div class="set-list-mid">
+                                <div class="inner ng-scope ng-binding">
+                                    {if $memberInfo.bio.address != null}
+                                    {$memberInfo.bio.address}
+                                    {else}
+                                    无
+                                    {/if}
+                                </div>
+                            </div>
+                        </li>
+                        <li class="ng-scope">
+                            <div class="set-list-left pull-left">
+                                <b class="ng-binding">出生日期</b>
+                            </div>
+                            <div class="set-list-right pull-right">
+                                <span class="ng-scope text-success">
+                                    {if $memberInfo.bio.birthday != null}
+                                    <span class="ng-binding">已设置</span>
+                                    {else}
+                                    <span class="ng-binding" style="color: #F90 !important;">未设置</span>
+                                    {/if}
+                                </span>
+                            </div>
+                            <div class="set-list-mid">
+                                <div class="inner ng-scope ng-binding">
+                                    {if $memberInfo.bio.birthday != null}
+                                    {$memberInfo.bio.birthday}
+                                    {else}
+                                    无
+                                    {/if}
+                                </div>
+                            </div>
+                        </li>
+                        <li class="ng-scope">
+                            <div class="set-list-left pull-left">
+                                <b class="ng-binding">身高</b>
+                            </div>
+                            <div class="set-list-right pull-right">
+                                <span class="ng-scope text-success">
+                                    {if $memberInfo.bio.height != null}
+                                    <span class="ng-binding">已设置</span>
+                                    {else}
+                                    <span class="ng-binding" style="color: #F90 !important;">未设置</span>
+                                    {/if}
+                                </span>
+                            </div>
+                            <div class="set-list-mid">
+                                <div class="inner ng-scope ng-binding">
+                                    {if $memberInfo.bio.height != null}
+                                    {$memberInfo.bio.height}
+                                    {else}
+                                    无
+                                    {/if}
+                                </div>
+                            </div>
+                        </li>
+                        <li class="ng-scope">
+                            <div class="set-list-left pull-left">
+                                <b class="ng-binding">体重</b>
+                            </div>
+                            <div class="set-list-right pull-right">
+                                <span class="ng-scope text-success">
+                                    {if $memberInfo.bio.weight != null}
+                                    <span class="ng-binding">已设置</span>
+                                    {else}
+                                    <span class="ng-binding" style="color: #F90 !important;">未设置</span>
+                                    {/if}
+                                </span>
+                            </div>
+                            <div class="set-list-mid">
+                                <div class="inner ng-scope ng-binding">
+                                    {if $memberInfo.bio.weight != null}
+                                    {$memberInfo.bio.weight}
+                                    {else}
+                                    无
+                                    {/if}
+                                </div>
+                            </div>
+                        </li>
+                        <li class="ng-scope">
+                            <div class="set-list-left pull-left">
+                                <b class="ng-binding">爱好</b>
+                            </div>
+                            <div class="set-list-right pull-right">
+                                <span class="ng-scope text-success">
+                                    {if $memberInfo.bio.hobby != null}
+                                    <span class="ng-binding">已设置</span>
+                                    {else}
+                                    <span class="ng-binding" style="color: #F90 !important;">未设置</span>
+                                    {/if}
+                                </span>
+                            </div>
+                            <div class="set-list-mid">
+                                <div class="inner ng-scope ng-binding">
+                                    {if $memberInfo.bio.hobby != null}
+                                    {$memberInfo.bio.hobby}
+                                    {else}
+                                    无
+                                    {/if}
+                                </div>
+                            </div>
+                        </li>
+                        <li class="ng-scope">
+                            <div class="set-list-left pull-left">
+                                <b class="ng-binding">民族</b>
+                            </div>
+                            <div class="set-list-right pull-right">
+                                <span class="ng-scope text-success">
+                                    {if $memberInfo.bio.nation != null}
+                                    <span class="ng-binding">已设置</span>
+                                    {else}
+                                    <span class="ng-binding" style="color: #F90 !important;">未设置</span>
+                                    {/if}
+                                </span>
+                            </div>
+                            <div class="set-list-mid">
+                                <div class="inner ng-scope ng-binding">
+                                    {if $memberInfo.bio.nation != null}
+                                    {$memberInfo.bio.nation}
+                                    {else}
+                                    无
+                                    {/if}
+                                </div>
+                            </div>
+                        </li>
+                        <li class="ng-scope">
+                            <div class="set-list-left pull-left">
+                                <b class="ng-binding">政治面貌</b>
+                            </div>
+                            <div class="set-list-right pull-right">
+                                <span class="ng-scope text-success">
+                                    {if $memberInfo.bio.pol_sta != null}
+                                    <span class="ng-binding">已设置</span>
+                                    {else}
+                                    <span class="ng-binding" style="color: #F90 !important;">未设置</span>
+                                    {/if}
+                                </span>
+                            </div>
+                            <div class="set-list-mid">
+                                <div class="inner ng-scope ng-binding">
+                                    {if $memberInfo.bio.pol_sta == null}
+                                        无
+                                    {elseif $memberInfo.bio.pol_sta == 1}
+                                        群众
+                                    {elseif $memberInfo.bio.pol_sta == 2}
+                                        团员
+                                    {elseif $memberInfo.bio.pol_sta == 3}
+                                        党员
+                                    {/if}
+                                </div>
+                            </div>
+                        </li>
+                        <li class="ng-scope">
+                            <div class="set-list-left pull-left">
+                                <b class="ng-binding">所在宿舍</b>
+                            </div>
+                            <div class="set-list-right pull-right">
+                                <span class="ng-scope text-success">
+                                    {if $memberInfo.bio.dorm != null}
+                                    <span class="ng-binding">已设置</span>
+                                    {else}
+                                    <span class="ng-binding" style="color: #F90 !important;">未设置</span>
+                                    {/if}
+                                </span>
+                            </div>
+                            <div class="set-list-mid">
+                                <div class="inner ng-scope ng-binding">
+                                    {if $memberInfo.bio.dorm != null}
+                                    {$memberInfo.bio.dorm}
+                                    {else}
+                                    无
+                                    {/if}
+                                </div>
+                            </div>
+                        </li>
+                        <li class="ng-scope">
+                            <div class="set-list-left pull-left">
+                                <b class="ng-binding">职业</b>
+                            </div>
+                            <div class="set-list-right pull-right">
+                                <span class="ng-scope text-success">
+                                    {if $memberInfo.bio.career != null}
+                                    <span class="ng-binding">已设置</span>
+                                    {else}
+                                    <span class="ng-binding" style="color: #F90 !important;">未设置</span>
+                                    {/if}
+                                </span>
+                            </div>
+                            <div class="set-list-mid">
+                                <div class="inner ng-scope ng-binding">
+                                    {if $memberInfo.bio.career != null}
+                                    {$memberInfo.bio.career}
+                                    {else}
+                                    无
+                                    {/if}
+                                </div>
+                            </div>
+                        </li>
+                        <li class="ng-scope">
+                            <div class="set-list-left pull-left">
+                                <b class="ng-binding">微信号</b>
+                            </div>
+                            <div class="set-list-right pull-right">
+                                <span class="ng-scope text-success">
+                                    {if $memberInfo.bio.wechat != null}
+                                    <span class="ng-binding">已设置</span>
+                                    {else}
+                                    <span class="ng-binding" style="color: #F90 !important;">未设置</span>
+                                    {/if}
+                                </span>
+                            </div>
+                            <div class="set-list-mid">
+                                <div class="inner ng-scope ng-binding">
+                                    {if $memberInfo.bio.wechat != null}
+                                        {$memberInfo.bio.wechats}
+                                    {else}
+                                        无
+                                    {/if}
+                                </div>
+                            </div>
+                        </li>
+                        <li class="ng-scope">
+                            <div class="set-list-left pull-left">
+                                <b class="ng-binding">性别</b>
+                            </div>
+                            <div class="set-list-right pull-right">
+                                <span class="ng-scope text-success">
+                                    {if $memberInfo.bio.sex != null}
+                                    <span class="ng-binding">已设置</span>
+                                    {else}
+                                    <span class="ng-binding" style="color: #F90 !important;">未设置</span>
+                                    {/if}
+                                </span>
+                            </div>
+                            <div class="set-list-mid">
+                                <div class="inner ng-scope ng-binding">
+                                    {if $memberInfo.bio.sex == null}
+                                        无
+                                    {elseif $memberInfo.bio.sex == 1}
+                                        男
+                                    {elseif $memberInfo.bio.sex == 2}
+                                        女
+                                    {/if}
+                                </div>
+                            </div>
+                        </li>
+                        <li class="ng-scope">
+                            <div class="set-list-left pull-left">
+                                <b class="ng-binding">角色</b>
+                            </div>
+                            <div class="set-list-right pull-right">
+                                <span class="ng-scope text-success">
+                                    {if $memberInfo.role_id != null}
+                                    <span class="ng-binding">已设置</span>
+                                    {else}
+                                    <span class="ng-binding" style="color: #F90 !important;">未设置</span>
+                                    {/if}
+                                </span>
+                            </div>
+                            <div class="set-list-mid">
+                                <div class="inner ng-scope ng-binding">
+                                    {if $memberInfo.role_id == 1}
+                                        系统管理员
+                                    {elseif $memberInfo.role_id == 2}
+                                        教师
+                                    {elseif $memberInfo.role_id == 3}
+                                        学生
+                                    {/if}
+                                </div>
+                            </div>
+                        </li>
+                        <li class="ng-scope">
+                            <div class="set-list-left pull-left">
+                                <b class="ng-binding">权限</b>
+                            </div>
+                            <div class="set-list-right pull-right">
+                                <span class="ng-scope text-success">
+                                    {if $memberInfo.status != null}
+                                    <span class="ng-binding">已设置</span>
+                                    {else}
+                                    <span class="ng-binding" style="color: #F90 !important;">未设置</span>
+                                    {/if}
+                                </span>
+                            </div>
+                            <div class="set-list-mid">
+                                <div class="inner ng-scope ng-binding">
+                                    {if $memberInfo.status == 1}
+                                        管理员
+                                    {elseif $memberInfo.status == 0}
+                                        普通用户
+                                    {/if}
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}
+
+{block name="js"}
+<script>
+    // 头像修改
+    function headPro() {
+        var propic = document.getElementById('propic').files[0];
+        var formData = new FormData();
+        formData.append('fileArray', propic);
+        $.ajax({
+            url: "{:url('admin/home/picmod')}",
+            type: 'post',
+            dataType: 'json',
+            cache: false,
+            processData: false,
+            contentType : false,
+            data: formData,
+            success:function (data) {
+                if (data.code == 1) {
+                    // $('.propic-entity').attr('src', data.url);
+                    location.reload();
+                } else {
+                    alert('修改失败');
+                }
+            }
+        });
+        return false;
+    }
+
+    // 修改个人资料
+    // $(document).ready(function () {
+    //     alert();
+    // })
+
+</script>
+{/block}

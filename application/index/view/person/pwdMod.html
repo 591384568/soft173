@@ -1,0 +1,139 @@
+{extend name="public/base" /}
+
+{block name="title"}
+软件高职173 - 留言
+{/block}
+
+{block name="style"}
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+<link rel="stylesheet" href="/static/assets/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="/static/assets/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/static/assets/css/form-elements.css">
+<link rel="stylesheet" href="/static/assets/css/style.css">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+
+<!-- Favicon and touch icons -->
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="/static/assets/ico/apple-touch-icon-144-precomposed.png">
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="/static/assets/ico/apple-touch-icon-114-precomposed.png">
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="/static/assets/ico/apple-touch-icon-72-precomposed.png">
+<link rel="apple-touch-icon-precomposed" href="/static/assets/ico/apple-touch-icon-57-precomposed.png">
+<style>
+    body { background: url("/static/assets/img/backgrounds/1.jpg"); }
+    .inner-bg { padding-top: 85px; }
+    .form-top-right { width: 51.86px;height: 66px; }
+</style>
+{/block}
+
+{block name="content"}`
+
+<!-- Top content -->
+<div class="top-content">
+
+    <div class="inner-bg">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-sm-offset-2 text">
+                    <h1><strong>班级留言</strong> 分享新鲜事...</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 col-sm-offset-3 form-box">
+
+                    <form role="form" action="" method="post" class="registration-form">
+
+                        <fieldset>
+                            <input type="hidden" name="id" value="{:session('index.id')}">
+                            <div class="form-top">
+                                <div class="form-top-left">
+                                    <h3>{:session('index.nickname')}</h3>
+                                    <p>Leave a message</p>
+                                </div>
+                                <div class="form-top-right">
+                                    <img src="{:session('index.propic')}" alt="">
+                                </div>
+                            </div>
+                            <div class="form-bottom">
+                                <div class="form-group">
+                                    <label class="sr-only" for="oldpassword">原始密码</label>
+                                    原始密码
+                                    <input type="password" name="oldpassword" id="oldpassword" placeholder="请输入原始密码" class="form-first-name form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label class="sr-only" for="password">新密码</label>
+                                    新密码
+                                    <input type="password" name="password" id="password" placeholder="请输入新密码" class="form-first-name form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label class="sr-only" for="conpass">重复密码</label>
+                                    重复密码
+                                    <input type="password" name="conpass" id="conpass" placeholder="请输入重复密码" class="form-first-name form-control">
+                                </div>
+                                <a class="btn btn-info" id="mod-password">修改密码</a>
+                            </div>
+                        </fieldset>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{/block}
+
+<body>
+
+{block name="js"}
+<script>
+    $(document).ready(function () {
+        $('#mod-password').click(function () {
+            var index = layer.load(1, {
+                shade: [0.1,'#fff'] //0.1透明度的白色背景
+            });
+            $.ajax({
+                url: "{:url('index/person/pwdmod')}",
+                type: 'post',
+                dataType: 'json',
+                data: $('form').serialize(),
+                success: function (data) {
+                    layer.close(index);
+                    if (data.code == 1) {
+                        layer.msg(data.msg, {
+                            icon: 6,
+                            time: 1500
+                        }, function () {
+                            location.href = data.url;
+                        });
+                    } else {
+                        layer.open({
+                            title: '修改失败',
+                            content: data.msg,
+                            icon: 5,
+                            anim: 6
+                        })
+                    }
+                }
+            });
+            return false;
+        });
+    });
+</script>
+<!-- Javascript -->
+<script src="/static/assets/js/jquery-1.11.1.min.js"></script>
+<script src="/static/assets/bootstrap/js/bootstrap.min.js"></script>
+<script src="/static/assets/js/jquery.backstretch.min.js"></script>
+<script src="/static/assets/js/scripts.js"></script>
+<!--[if lt IE 10]>
+<script src="/static/assets/js/placeholder.js"></script>
+<![endif]-->
+<script src="/static/lib/layer/layer.js"></script>
+{/block}
+</body>
+
+</html>

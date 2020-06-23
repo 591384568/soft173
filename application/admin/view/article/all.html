@@ -1,0 +1,145 @@
+{include file="public/_head" /}
+<!-- /Navbar -->
+<!-- Main Container -->
+<div class="main-container container-fluid">
+    <!-- Page Container -->
+    <div class="page-container">
+
+        <!-- Page Sidebar -->
+        {include file="public/_left" /}
+        <!-- /Page Sidebar -->
+        <!-- Page Content -->
+        <div class="page-content">
+            <!-- Page Breadcrumb -->
+            <div class="page-breadcrumbs">
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="fa fa-home"></i>&nbsp;文章管理
+                    </li>
+                    <li>文章列表</li>
+                </ul>
+            </div>
+            <!-- /Page Breadcrumb -->
+            <!-- Page Body -->
+            <div class="page-body">
+                <a href="articleadd.html" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i>&nbsp;添加文章</a>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <span class="widget-caption">文章列表</span>
+                                <div class="widget-buttons">
+                                    {$articleInfo->render()|raw|replace}
+                                </div>
+                            </div>
+                            <div class="widget-body">
+                                <table class="table table-hover table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>留言人</th>
+                                        <th>@用户</th>
+                                        <th>留言信息</th>
+                                        <th>阅读量</th>
+                                        <th>点赞数</th>
+                                        <th>留言状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    {volist name="articleInfo" id="vo"}
+                                    <tr>
+                                        <td>{$vo.id}</td>
+                                        <td>{$vo.name.nickname}</td>
+                                        {if $vo.point == -1}
+                                            <td>全体成员</td>
+                                        {else}
+                                            <td>{$vo.admin.nickname}</td>
+                                        {/if}
+                                        <td>{$vo.content}</td>
+                                        <td>{$vo.num}</td>
+                                        <td>{$vo.like}</td>
+                                        {if $vo.status == 1}
+                                            <td>公开</td>
+                                        {else}
+                                            <td>不公开</td>
+                                        {/if}
+                                        <td>
+                                            <a href="{:url('admin/article/edit', ['id' => $vo.id])}" class="btn btn-sm btn-warning copyreader">编辑</a>
+                                            <a href="#" class="btn btn-sm btn-danger del" dataid="{$vo.id}">删除</a>
+                                        </td>
+                                    </tr>
+                                    {/volist}
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Body -->
+        </div>
+        <!-- /Page Content -->
+
+    </div>
+    <!-- /Page Container -->
+    <!-- Main Container -->
+
+</div>
+
+{include file="public/_js" /}
+<script>
+    $(function () {
+        $('.del').click(function () {
+            let id = $(this).attr('dataid');
+            layer.confirm('确定删除改留言信息吗?', {
+                title: '删除文章',
+                icon: 3
+            }, function (index) {
+                layer.close(index);
+                var index = layer.load(1, {
+                    shade: [0.1,'#fff'] //0.1透明度的白色背景
+                });
+                $.ajax({
+                    url: "{:url('admin/article/del')}",
+                    type: 'post',
+                    dataType: 'json',
+                    data: {id: id},
+                    success: function (data) {
+                        layer.close(index);
+                        if (data.code == 1) {
+                            layer.msg(data.msg, {
+                                icon: 6,
+                                time: 2000
+                            }, function () {
+                                location.href = data.url;
+                            });
+                        } else {
+                            layer.open({
+                                title: '留言删除失败',
+                                content: data.msg,
+                                icon: 5,
+                                anim: 6
+                            });
+                        }
+                    }
+                })
+            });
+            return false;
+        });
+
+        $('.copyreader').click(function () {
+            let id = $(this).attr('dataid');
+            $.ajax({
+                url: "{:url('admin/article/edit')}",
+                type: 'post',
+                dataType: 'json',
+                data: {id: id},
+                success: function (data) {
+                    console.log(data);
+                }
+            })
+        })
+    })
+</script>
+</body>
+<!--  /Body -->
+</html>

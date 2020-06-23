@@ -1,0 +1,156 @@
+{extend name="public/base" /}
+
+{block name="title"}
+    留言详细信息 - {$articleInfo.id}
+{/block}
+
+{block name="style"}
+<style>
+
+    .main-newsdate { margin-bottom: 331px; }
+    .content-msg { width: 1200px; font-size: 23px; text-align: left; word-wrap:break-word; word-break:break-all; position: relative; }
+    .comment-inner { text-align: left; width: 1200px; margin: 0 auto; }
+    .comment-list-itme { position: relative; background: #EEEEEE; padding: 10px; margin-bottom: 10px; border: #CCCCCC solid 1px; box-shadow: 1px 1px 5px #D9EDF7; border-radius: 5px;}
+    .info { font-weight: bold; margin-left: 50px; font-size: 16px; }
+    .info a { position: absolute; right: 15px; }
+    .comment-btn {position: absolute; right: 15px; }
+    .comment-list-itme .info small { margin-left: 10px; color: #888888; font-size: 85%; }
+    .comment-list-itme .content { text-indent: 1em; padding-top: 10px; }
+    .content { max-width: 100%; background: #EEEEEE; padding: 10px; margin-left: 50px; border: #DDDDDD solid 1px; border-radius: 3px; box-shadow: 2px 2px 10px #EEEEEE;}
+    .comment-list-itme > img { width: 30px; float: left; }
+    .reply-list { margin: 20px 20px 20px 75px; padding-bottom: 10px; background-color: white; width: 93%; }
+    .reply-list > img { width: 30px; margin: 10px; float: left; }
+    #comment-text > textarea { width: 580px; height: 70px; padding: 7px; }
+    .reply-box { margin: 20px 20px 20px 75px; }
+    .reply-box textarea { padding: 10px; }
+</style>
+{/block}
+
+{block name="content"}
+<div class="main-newsdate">
+    <div class="layui-container">
+        <p class="news"><a href="{:url('index/article/index')}">留言板</a> > 留言详情</p>
+        <h1>发布人: {$articleInfo.name.nickname}</h1>
+        <p class="pushtime">发布时间：<span>{$articleInfo.create_time}</span></p>
+        <div class="content-msg">留言信息: {$articleInfo.content}
+            {if $articleInfo.admin != null}
+                <a href="#">@{$articleInfo.admin.nickname}</a>
+            {elseif $articleInfo.point == -1}
+                <a href="#">@全体成员</a>
+            {/if}
+            <a href="javascript:void(0);" class="comment-btn" @click="showCT()">评论</a>
+        </div>
+        <!--<div><img src="/static/res/static/img/news_big.jpg" alt="新闻详情图"></div>-->
+    </div>
+    <hr />
+    <div id="comment-text" v-show="!showCommentText">
+        <textarea v-model="commentData" placeholder="评论 {$articleInfo.name.nickname}: " ></textarea>
+        <button class="btn btn-info" @click="comment({$articleInfo.id}, {:session('index.id')})">评论</button>
+    </div>
+    <div class="comment">
+        <div class="comment-inner">
+            <div class="comment-list">
+                <h3>评论</h3>
+
+                <div class="comment-list-itme" v-for="comments in commentInfo">
+                    <img v-bind:src="comments.propic" alt="">
+                    <div class="info">{{ comments.nickname }}
+                        <small>{{ comments.create_time }}</small>
+                        <a href="javascript:void(0)" class="replyBtn" show="0" @click="replyshow($event)">回复</a>
+                    </div>
+                    <div class="content">{{ comments.content }}</div>
+                    <div class="reply-box hidden">
+                        <textarea v-model="replyData" cols="100" rows="3"></textarea>
+                        <a href="javascript:void(0)" class="btn btn-info" @click="reply(comments.id, {:session('index.id')})">回复</a>
+                    </div>
+                    <div class="reply-inner">
+                        <div class="reply-list" v-for="replys in replyInfo" v-if="replys.comment_id == comments.id">
+                            <img v-bind:src="replys.propic" alt="">
+                            <div class="info">{{ replys.nickname }} <small>{{ replys.create_time }}</small></div>
+                            <div class="content">{{ replys.content }}</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="js"}
+<script>
+    
+    new Vue({
+        el: ".main-newsdate",
+        data: {
+            commentInfo: '',
+            replyInfo: '',
+
+            // 提交评论数据
+            commentData: '',
+            // 提交回复数据
+            replyData: '',
+
+            // 评论框显示隐藏
+            showCommentText: 'false'
+        },
+        mounted() {
+            this.refreshInfo();
+        },
+        methods: {
+            // Show the hidden comment box
+            showCT() {
+                this.showCommentText = !this.showCommentText;
+                return false;
+            },
+            // user comment
+            comment(article_id, member_id) {
+                var data = {'article_id':article_id, 'member_id':member_id, 'content':this.commentData};
+                axios.post("{:url('index/article/comment')}", data).then((response) => {
+                    if (response.data != 1) {
+                        alert(response.data);
+                        return false;
+                    }
+                    this.commentData = '';
+                    this.refreshInfo();
+                });
+            },
+            // user reply
+            replyshow(e) {
+                if ($(e.path).attr('show') == 0) {
+                    $(e.path).attr('show', '1');
+                    $(e.path).parent('.info').siblings('.reply-box').removeClass('hidden');
+                } else {
+                    $(e.path).attr('show', '0');
+                    $(e.path).parent('.info').siblings('.reply-box').addClass('hidden');
+                }
+            },
+            reply(comment_id, member_id) {
+                var data = {'comment_id': comment_id, 'member_id': member_id, 'content': this.replyData};
+                if (member_id == undefined) {
+                    alert('您未登陆账号');return false;
+                }
+                axios.post("{:url('index/article/reply')}", data).then((response) => {
+                    if (response.data != 1) {
+                        alert(response.data);
+                        return false;
+                    }
+                    this.replyData = '';
+                    this.refreshInfo();
+                });
+            },
+            // refresh data
+            refreshInfo() {
+                var str = window.location.href;
+                str = str.substring(str.lastIndexOf("/") + 1);
+                str = str.substring(0, str.lastIndexOf("."));
+                axios.post("{:url('index/article/getInfo')}", {id: str}).then((response) => {
+                    this.commentInfo = response.data.commentInfo;
+                    this.replyInfo = response.data.replyInfo;
+                })
+            }
+        }
+    });
+</script>
+{/block}

@@ -1,0 +1,142 @@
+{include file="public/_head" /}
+<!-- Main Container -->
+<div class="main-container container-fluid">
+    <!-- Page Container -->
+    <div class="page-container">
+
+        <!-- Page Sidebar -->
+        {include file="public/_left" /}
+        <!-- /Page Sidebar -->
+        <!-- Page Content -->
+        <div class="page-content">
+            <!-- Page Breadcrumb -->
+            <div class="page-breadcrumbs">
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="fa fa-home"></i>&nbsp;管理员管理
+                    </li>
+                    <li>管理员列表</li>
+                </ul>
+            </div>
+            <!-- /Page Breadcrumb -->
+            <!-- Page Body -->
+            <div class="page-body">
+                <a href="{:url('admin/member/add')}" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i>&nbsp;人员添加</a>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <span class="widget-caption">管理员管理</span>
+                                <div class="widget-buttons">
+                                    {$adminInfo->render()|raw|replace}
+                                </div>
+                            </div>
+                            <div class="widget-body">
+                                <table class="table table-hover table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>昵称</th>
+                                        <th>头像</th>
+                                        <th>状态</th>
+                                        <th>权限</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    {volist name="adminInfo" id="vo"}
+                                    <tr>
+                                        <td>{$vo.id}</td>
+                                        <td>{$vo.nickname}</td>
+                                        <td><img style="width: 30px" src="{$vo.propic}" alt="头像"></td>
+                                        {if $vo.status == 1}
+                                            <td>正常</td>
+                                        {else}
+                                            <td>禁用</td>
+                                        {/if}
+                                        {if $vo.is_super == 1}
+                                            <td>系统管理员</td>
+                                        {elseif $vo.status == 1}
+                                            <td>普通管理员</td>
+                                        {else}
+                                            <td>普通用户</td>
+                                        {/if}
+                                        <td>
+                                            {if $vo.status == 1}
+                                                <a href="#" class="btn btn-darkorange btn-xs admin-status switch-btn" dataid="{$vo.id}">禁用</a>
+                                            {else}
+                                                <a href="#" class="btn btn-success btn-xs admin-status switch-btn" dataid="{$vo.id}">启用</a>
+                                            {/if}
+                                            <a href="#" class="btn btn-sm btn-danger del" dataid="{$vo.id}">删除</a>
+                                        </td>
+                                    </tr>
+                                    {/volist}
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Body -->
+        </div>
+        <!-- /Page Content -->
+
+    </div>
+    <!-- /Page Container -->
+    <!-- Main Container -->
+
+</div>
+{include file="public/_js" /}
+<script>
+    $(function () {
+        // 修改是否可用权限
+        $('.switch-btn').click(function () {
+            var id = $(this).attr('dataid');
+            var index = layer.load(1, {
+                shade: [0.1, '#fff'] //0.1透明度的白色背景
+            });
+            $.ajax({
+                url: "{:url('admin/admin/status')}",
+                type: 'post',
+                dataType: 'json',
+                data: {id: id},
+                success: function (data) {
+                    layer.close(index);
+                    if (data.code == 1) {
+                        layer.msg(data.msg, {
+                            icon: 6,
+                            time: 1500
+                        }, function () {
+                            location.href = data.url;
+                        });
+                    } else {
+                        layer.open({
+                            title: '操作失败',
+                            content: data.msg,
+                            icon: 5,
+                            anim: 6
+                        })
+                    }
+                }
+            })
+            return false;
+        });
+
+        // 删除管理员
+        $('.del').click(function () {
+            var id = $(this).attr('dataid');
+            $.ajax({
+                url: "{:url('admin/member/del')}",
+                type: 'post',
+                dataType: "json",
+                data: {id: id},
+                success: function (data) {
+                    console.log(data);
+                }
+            })
+            return false;
+        })
+    });
+</script>
+</body>
+<!--  /Body -->
+</html>

@@ -1,0 +1,115 @@
+{include file="public/_head" /}
+<!-- Main Container -->
+<div class="main-container container-fluid">
+    <!-- Page Container -->
+    <div class="page-container">
+
+        <!-- Page Sidebar -->
+        {include file="public/_left" /}
+        <!-- /Page Sidebar -->
+        <!-- Page Content -->
+        <div class="page-content">
+            <!-- Page Breadcrumb -->
+            <div class="page-breadcrumbs">
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="fa fa-home"></i>&nbsp;文章管理
+                    </li>
+                    <li>文章添加</li>
+                </ul>
+            </div>
+            <!-- /Page Breadcrumb -->
+            <!-- Page Body -->
+            <div class="page-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="widget radius-bordered">
+                            <div class="widget-header bordered-bottom bordered-themeprimary">
+                                <span class="widget-caption">文章添加</span>
+                            </div>
+                            <div class="widget-body">
+                                <form action="" class="form-horizontal">
+                                    <input type="hidden" name="id" value="{:session('admin.id')}">
+                                    <div class="form-group">
+                                        <label for="status" class="control-label col-sm-2">是否公开</label>
+                                        <div class="col-sm-6">
+                                            <select id="status" name="status" class="form-control">
+                                                <option value="1">公开</option>
+                                                <option value="0">不公开</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="point" class="control-label col-sm-2">选择@的用户</label>
+                                        <div class="col-sm-6">
+                                            <select id="point" name="point" class="form-control">
+                                                <option value="">无</option>
+                                                <option value="-1">全体成员</option>
+                                                {volist name="memberInfo" id="vo"}
+                                                    <option value="{$vo.id}">{$vo.nickname}</option>
+                                                {/volist}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="content" class="control-label col-sm-2">留言内容</label>
+                                        <div class="col-sm-6">
+                                            <textarea name="content" id="content" cols="30" rows="10" class=""></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-2 col-sm-6">
+                                            <button class="btn btn-primary" id="add">添加</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Body -->
+        </div>
+        <!-- /Page Content -->
+
+    </div>
+    <!-- /Page Container -->
+    <!-- Main Container -->
+
+</div>
+
+{include file="public/_js" /}
+
+<script>
+    UE.getEditor('content');
+
+    $('#add').click(function () {
+        $.ajax({
+            url: "{:url('admin/article/add')}",
+            type: "post",
+            dataType: "json",
+            data: $('form').serialize(),
+            success: function (data) {
+                if (data.code == 1) {
+                    layer.msg(data.msg, {
+                        icon: 6,
+                        time: 2000
+                    }, function () {
+                        location.href = data.url;
+                    });
+                } else {
+                    layer.open({
+                        title: '留言添加失败',
+                        content: data.msg,
+                        icon: 5,
+                        anim: 6
+                    });
+                }
+            }
+        });
+        return false;
+    })
+</script>
+</body>
+<!--  /Body -->
+</html>

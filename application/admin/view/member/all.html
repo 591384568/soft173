@@ -1,0 +1,121 @@
+{include file="public/_head" /}
+<!-- Main Container -->
+<div class="main-container container-fluid">
+    <!-- Page Container -->
+    <div class="page-container">
+
+        <!-- Page Sidebar -->
+        {include file="public/_left" /}
+        <!-- /Page Sidebar -->
+        <!-- Page Content -->
+        <div class="page-content">
+            <!-- Page Breadcrumb -->
+            <div class="page-breadcrumbs">
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="fa fa-home"></i>&nbsp;人员管理
+                    </li>
+                    <li>人员列表</li>
+                </ul>
+            </div>
+            <!-- /Page Breadcrumb -->
+            <!-- Page Body -->
+            <div class="page-body">
+                <a href="{:url('admin/member/add')}" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i>&nbsp;添加人员</a>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <span class="widget-caption">添加人员</span>
+                                <div class="widget-buttons">
+                                    {$roleInfo->render()|raw|replace}
+                                </div>
+                            </div>
+                            <div class="widget-body">
+                                <table class="table table-hover table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>用户名</th>
+                                        <th>昵称</th>
+                                        <th>头像</th>
+                                        <th>邮箱</th>
+                                        <th>角色</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    {volist name="roleInfo" id="val"}
+                                    <tr>
+                                        <td>{$val.id}</td>
+                                        <td>{$val.username}</td>
+                                        <td>{$val.nickname}</td>
+                                        <td><img style="width: 30px" src="{$val.propic}" alt="头像"></td>
+                                        <td>{$val.email}</td>
+                                        <td>{$val.role.rolename}</td>
+                                        <td>
+                                            <a href="{:url('admin/member/edit', ['id' => $val.id])}" class="btn btn-sm btn-warning member-edit">编辑</a>
+                                            <a href="{:url('admin/member/info', ['id' => $val.id])}" class="btn btn-sm btn-success member-edit">详细信息</a>
+                                            <a href="#" class="btn btn-sm btn-danger member-del" dataid="{$val.id}">删除</a>
+                                        </td>
+                                    </tr>
+                                    {/volist}
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Body -->
+        </div>
+        <!-- /Page Content -->
+
+    </div>
+    <!-- /Page Container -->
+    <!-- Main Container -->
+
+</div>
+
+{include file="public/_js" /}
+<script>
+    $(function () {
+        // 人员删除
+        $('.member-del').click(function () {
+            var id = $(this).attr('dataid');
+
+            layer.confirm('确定删除吗?', {
+                title: '删除用户',
+                icon: 3
+            }, function (index) {
+                layer.close(index);
+                $.ajax({
+                    url: "{:url('admin/member/del')}",
+                    type: 'post',
+                    dataType: 'json',
+                    data: {id: id},
+                    success: function (data) {
+                        if (data.code == 1) {
+                            layer.msg(data.msg, {
+                                icon: 6,
+                                time: 2000
+                            }, function () {
+                                location.href = data.url;
+                            });
+                        } else {
+                            layer.open({
+                                title: '删除失败',
+                                content: data.msg,
+                                icon: 5,
+                                anim: 6
+                            })
+                        }
+                    }
+                });
+            })
+            return false;
+        })
+
+    })
+</script>
+</body>
+<!--  /Body -->
+</html>
